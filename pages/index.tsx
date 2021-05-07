@@ -32,18 +32,18 @@ export default function Home(props: Props) {
 		e.preventDefault();
 		const response = await axios.post('/api/SearchCharacters', { query });
 		const { data, error } = response.data;
-    if(error){
-      toast({
-        position : "bottom",
-        title : 'Error Occured',
-        description : error,
-        status : "error",
-        duration : 5000,
-        isClosable : true
-      })
-    }else{
-      setChars(data)
-    }
+		if (error) {
+			toast({
+				position: 'bottom',
+				title: 'Error Occured',
+				description: error,
+				status: 'error',
+				duration: 5000,
+				isClosable: true,
+			});
+		} else {
+			setChars(data);
+		}
 	};
 
 	return (
@@ -63,7 +63,7 @@ export default function Home(props: Props) {
 						aria-label='search'
 						icon={<DeleteIcon />}
 						colorScheme='red'
-            disabled={query.length === 0}
+						disabled={query.length === 0}
 						onClick={(e) => {
 							setQuery('');
 							setChars(characters);

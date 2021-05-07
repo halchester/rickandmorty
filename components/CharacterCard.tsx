@@ -10,11 +10,11 @@ interface CharacterCardProps {
 const CharacterCard = (props: CharacterCardProps) => {
 	const { character } = props;
 	return (
-		<Box>
+		<Box borderRadius = "lg" background = "gray.200" p = {3}>
 			<Flex alignItems='center' direction='row' justifyContent='center' py = {4}>
 				<Image src={character.image} width = {200} height = {200}/>
 			</Flex>
-			<Heading as='h4' textAlign='center' size='md'>
+			<Heading as='h4' textAlign='center' size='md' mb = {4}>
 				{character.name}
 			</Heading>
 			<Text align='center'>Origin : {character.origin.name}</Text>
