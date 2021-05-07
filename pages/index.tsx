@@ -1,25 +1,22 @@
 import { Text } from '@chakra-ui/layout';
 import { ApolloClient, gql, InMemoryCache } from '@apollo/client';
 import React, { useState } from 'react';
-
-interface CharacterProps {
-	name: string;
-	id: number;
-	location: {
-		id: number;
-		name: string;
-	};
-	origin: {
-		id: number;
-		name: string;
-	};
-	episode: {
-		id: number;
-		episode: string;
-		air_date: Date;
-	};
-	image: string;
-}
+import {
+	Heading,
+	Box,
+	Flex,
+	Input,
+	useToast,
+	IconButton,
+	Stack,
+	useColorMode,
+	useColorModeValue,
+	SimpleGrid,
+} from '@chakra-ui/react';
+import { CharacterProps } from '../interfaces';
+import CharacterCard from '../components/CharacterCard';
+import { DeleteIcon, SearchIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 
 interface Props {
 	characters: CharacterProps[];
@@ -27,12 +24,62 @@ interface Props {
 
 export default function Home(props: Props) {
 	const { characters } = props;
-
 	const [chars, setChars] = useState(characters);
+	const [query, setQuery] = useState('');
+	const toast = useToast();
+
+	const handleSubmit = async (e: any) => {
+		e.preventDefault();
+		const response = await axios.post('/api/SearchCharacters', { query });
+		const { data, error } = response.data;
+    if(error){
+      toast({
+        position : "bottom",
+        title : 'Error Occured',
+        description : error,
+        status : "error",
+        duration : 5000,
+        isClosable : true
+      })
+    }else{
+      setChars(data)
+    }
+	};
+
 	return (
-		<div>
-			<Text>Hi</Text>
-		</div>
+		<Flex direction='column' justify='center' align='center' m={4}>
+			<Heading my={2}>Rick and Morty!</Heading>
+			<form onSubmit={handleSubmit}>
+				<Stack direction='row' maxWidth='500px'>
+					<Input onChange={(e) => setQuery(e.target.value)} value={query} />
+					<IconButton
+						aria-label='search'
+						icon={<SearchIcon />}
+						colorScheme='green'
+						disabled={query.length === 0}
+						type='submit'
+					/>
+					<IconButton
+						aria-label='search'
+						icon={<DeleteIcon />}
+						colorScheme='red'
+            disabled={query.length === 0}
+						onClick={(e) => {
+							setQuery('');
+							setChars(characters);
+						}}
+					/>
+				</Stack>
+			</form>
+
+			<Box m={2} py={8}>
+				<SimpleGrid columns={[1, 2, 3]} spacing={8}>
+					{chars.map((char, _) => (
+						<CharacterCard character={char} key={char.id} />
+					))}
+				</SimpleGrid>
+			</Box>
+		</Flex>
 	);
 }
 
