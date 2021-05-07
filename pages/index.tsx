@@ -15,18 +15,18 @@ import {
 } from '@chakra-ui/react';
 import { CharacterProps } from '../interfaces';
 import CharacterCard from '../components/CharacterCard';
-import { DeleteIcon, SearchIcon } from '@chakra-ui/icons';
+import { DeleteIcon, SearchIcon, SunIcon, MoonIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
 interface Props {
 	characters: CharacterProps[];
 }
-
 export default function Home(props: Props) {
 	const { characters } = props;
 	const [chars, setChars] = useState(characters);
 	const [query, setQuery] = useState('');
 	const toast = useToast();
+	const { colorMode, toggleColorMode } = useColorMode();
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
@@ -48,7 +48,25 @@ export default function Home(props: Props) {
 
 	return (
 		<Flex direction='column' justify='center' align='center' m={4}>
-			<Heading my={2}>Rick and Morty!</Heading>
+			<Stack direction='row' alignItems='center' mb={3}>
+				<Heading my={2}>Rick and Morty!</Heading>
+				{colorMode === 'light' ? (
+					<IconButton
+						aria-label='search'
+						icon={<MoonIcon />}
+						onClick={() => {
+							toggleColorMode();
+						}}
+					/>
+				) : (
+					<IconButton
+						aria-label='search'
+						icon={<SunIcon />}
+						onClick={() => toggleColorMode()}
+					/>
+				)}
+			</Stack>
+
 			<form onSubmit={handleSubmit}>
 				<Stack direction='row' maxWidth='500px'>
 					<Input onChange={(e) => setQuery(e.target.value)} value={query} />
